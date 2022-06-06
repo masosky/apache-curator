@@ -1,0 +1,46 @@
+version: '3'
+services:
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:latest
+    #platform: linux/amd64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.2
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:latest
+  #platform: linux/amd64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 32181:2181
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.3
+
+  zoonavigator:
+    container_name: zoonavigator
+    image: elkozmon/zoonavigator:latest
+    restart: unless-stopped
+    #platform: linux/amd64
+    environment:
+      HTTP_PORT: 9000
+    ports:
+      - 9000:9000
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.4
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
